@@ -75,9 +75,9 @@
 </style>
 </head>
 <body>
-<header style="background: linear-gradient(135deg, #0077b6, #00b4d8); color: white; text-align: center; padding: 30px 10px;"></style=>>
+<header style="background: linear-gradient(135deg, #0077b6, #00b4d8); color: white; text-align: center; padding: 30px 10px;"></style=>
   <div class="brand">
-    <img class="logo" src="Image/Amante.jpg" alt="Amante Fishes"  style="max-width: 150px; border-radius: 12px; margin-bottom: 10px;">
+    <img class="logo" src="Image/Amantelogo.jpg" alt="Amante Fishes"  style="max-width: 150px; border-radius: 12px; margin-bottom: 10px;">
     <div>
       <h1 style="font-size: 48px; font-weight: 800; margin: 10px 0;">AMANTE FISHES</h1>
       <p style="font-size: 20px; margin: 0;">Fresh from Billingsgate Market — Next Day Delivery · Kerala-style cleaning & packing</p>
@@ -276,14 +276,34 @@ function renderSection(idx){
     ctrl.appendChild(qty);
 
     // +Add quick button
-    const add = document.createElement('button'); add.className = 'add-mini'; add.type = 'button'; add.textContent = '+ Add';
-    add.addEventListener('click', ()=> {
-      const current = Number(qty.value) || 0;
-      qty.value = current + 1;
-      saveState(idx, ii, qty.value, sel ? sel.value : 0);
-      updateSummary();
-    });
-    ctrl.appendChild(add);
+   // Quantity control buttons
+const dec = document.createElement('button');
+dec.className = 'add-mini';
+dec.type = 'button';
+dec.textContent = '–';
+dec.style.background = 'var(--accent)';
+dec.addEventListener('click', () => {
+  const current = Number(qty.value) || 0;
+  if (current > 0) {
+    qty.value = current - 1;
+    saveState(idx, ii, qty.value, sel ? sel.value : 0);
+    updateSummary();
+  }
+});
+ctrl.appendChild(dec);
+
+const add = document.createElement('button');
+add.className = 'add-mini';
+add.type = 'button';
+add.textContent = '+';
+add.addEventListener('click', () => {
+  const current = Number(qty.value) || 0;
+  qty.value = current + 1;
+  saveState(idx, ii, qty.value, sel ? sel.value : 0);
+  updateSummary();
+});
+ctrl.appendChild(add);
+
 
     // Attach listeners to save changes into cartState (persist across tabs)
     if(sel){
@@ -435,3 +455,4 @@ renderSection(0);
 </script>
 </body>
 </html>
+
