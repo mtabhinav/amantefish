@@ -276,33 +276,104 @@ function renderSection(idx){
     ctrl.appendChild(qty);
 
     // +Add quick button
-   // Quantity control buttons
-const dec = document.createElement('button');
-dec.className = 'add-mini';
-dec.type = 'button';
-dec.textContent = '–';
-dec.style.background = 'var(--accent)';
-dec.addEventListener('click', () => {
-  const current = Number(qty.value) || 0;
-  if (current > 0) {
-    qty.value = current - 1;
+// Create Add button
+const addBtn = document.createElement('button');
+addBtn.textContent = 'Add';
+addBtn.className = 'add-btn';
+addBtn.style.background = '#2196F3'; // light blue color
+addBtn.style.color = '#fff';
+addBtn.style.border = 'none';
+addBtn.style.padding = '6px 16px';
+addBtn.style.borderRadius = '20px';
+addBtn.style.cursor = 'pointer';
+addBtn.style.fontWeight = '600';
+addBtn.style.transition = 'all 0.3s ease';
+
+ctrl.appendChild(addBtn);
+
+// Function to create + / - control
+function createQtyControl() {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'qty-control';
+  wrapper.style.display = 'flex';
+  wrapper.style.alignItems = 'center';
+  wrapper.style.border = '1px solid #2196F3';
+  wrapper.style.borderRadius = '20px';
+  wrapper.style.padding = '2px 8px';
+  wrapper.style.color = '#2196F3';
+  wrapper.style.gap = '10px';
+  wrapper.style.transition = 'all 0.3s ease';
+
+  const dec = document.createElement('button');
+  dec.textContent = '–';
+  dec.className = 'qty-btn';
+  dec.style.background = 'transparent';
+  dec.style.border = 'none';
+  dec.style.color = '#2196F3';
+  dec.style.fontSize = '16px';
+  dec.style.cursor = 'pointer';
+  dec.style.fontWeight = '600';
+
+  const num = document.createElement('span');
+  num.textContent = '1';
+  num.className = 'qty-num';
+  num.style.fontWeight = '600';
+  num.style.minWidth = '20px';
+  num.style.textAlign = 'center';
+
+  const inc = document.createElement('button');
+  inc.textContent = '+';
+  inc.className = 'qty-btn';
+  inc.style.background = 'transparent';
+  inc.style.border = 'none';
+  inc.style.color = '#2196F3';
+  inc.style.fontSize = '16px';
+  inc.style.cursor = 'pointer';
+  inc.style.fontWeight = '600';
+
+  // Button actions
+  inc.addEventListener('click', () => {
+    const current = Number(num.textContent);
+    num.textContent = current + 1;
+    qty.value = current + 1;
     saveState(idx, ii, qty.value, sel ? sel.value : 0);
     updateSummary();
-  }
-});
-ctrl.appendChild(dec);
+  });
 
-const add = document.createElement('button');
-add.className = 'add-mini';
-add.type = 'button';
-add.textContent = '+';
-add.addEventListener('click', () => {
-  const current = Number(qty.value) || 0;
-  qty.value = current + 1;
-  saveState(idx, ii, qty.value, sel ? sel.value : 0);
+  dec.addEventListener('click', () => {
+    const current = Number(num.textContent);
+    if (current > 1) {
+      num.textContent = current - 1;
+      qty.value = current - 1;
+      saveState(idx, ii, qty.value, sel ? sel.value : 0);
+      updateSummary();
+    } else {
+      // Go back to Add button
+      ctrl.removeChild(wrapper);
+      ctrl.appendChild(addBtn);
+      qty.value = 0;
+      saveState(idx, ii, 0, sel ? sel.value : 0);
+      updateSummary();
+    }
+  });
+
+  wrapper.appendChild(dec);
+  wrapper.appendChild(num);
+  wrapper.appendChild(inc);
+  return wrapper;
+}
+
+// When Add button is clicked
+addBtn.addEventListener('click', () => {
+  qty.value = 1;
+  saveState(idx, ii, 1, sel ? sel.value : 0);
   updateSummary();
+  ctrl.removeChild(addBtn);
+  const qtyControl = createQtyControl();
+  ctrl.appendChild(qtyControl);
 });
-ctrl.appendChild(add);
+
+
 
 
     // Attach listeners to save changes into cartState (persist across tabs)
